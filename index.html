@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>亿润集团旗下品牌数据分析</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .brand-button {
+            background-color: #ffff;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .active {
+            background-color: rgb(255, 244, 153); /* 或其他你喜欢的颜色 */
+        }
+
+        .brand-button[data-brand="雨薇伊人"].active {
+            background-color: rgb(255, 204, 153);
+        }
+
+        .brand-button[data-brand="千好"].active {
+            background-color: rgb(50, 174, 149);
+        }
+
+        .brand-button[data-brand="露蕾诗"].active {
+            background-color: rgb(255, 153, 255);
+        }
+
+        .brand-button[data-brand="芙泊士"].active {
+            background-color: rgb(255, 153, 153);
+        }
+
+        .brand-button[data-brand="薇肌萃"].active {
+            background-color: rgb(204, 255, 255);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+        }
+
+        /* 移动设备优先样式 */
+        @media (max-width: 768px) {
+            .brand-button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .brand-button {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+        }
+
+        .container {
+            padding: 10px;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #info-content {
+            margin-top: 20px;
+        }
+
+        img {
+            margin-top: 20px;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <h2>品牌筛选</h2>
+    <div id="brand-buttons">
+
+    </div>
+
+    <h2>选择日期</h2>
+    <input type="date" id="date-picker">
+
+    <div id="info-buttons" style="display:none;">
+        <h2>显示信息</h2>
+        <div id="info-buttons-container"></div>
+    </div>
+
+    <div id="info-content" style="display:none;">
+        <h3>选中的信息：</h3>
+        <p id="selected-info"></p>
+        <p id="info-details"></p>
+        <img id="info-image" src="" alt="Info Image" style="display:none;">
+    </div>
+</div>
+
+<script>
+    const brands = ['雨薇伊人', '千好', '露蕾诗', '芙泊士', '薇肌萃'];
+    const infoButtons = [
+        '预计完成数据 & 实际完成个数',
+        '门店数据收集情况',
+        '每日加盟门店数量',
+        '客户总数量',
+        '业绩规划师门店数',
+        '周报-预计完成条数与实际完成条数',
+        '客户满意度',
+        '品牌月店销数据'
+    ];
+
+    const data = {
+        '预计完成数据 & 实际完成个数': '',
+        '门店数据收集情况': '',
+        '每日加盟门店数量': '',
+        '客户总数量': '',
+        '业绩规划师门店数': '',
+        '周报-预计完成条数与实际完成条数': '',
+        '客户满意度': '',
+        '品牌月店销数据': ''
+    };
+
+    const images = {
+  '雨薇伊人': {
+    '预计完成数据 & 实际完成个数': {
+      '2024-07-15': 'https://image-yirun.oss-cn-hangzhou.aliyuncs.com/images/yuwei/1/2024年7月15日.png',
+      '2024-07-16': 'images/yuwei/2023-07-16_store_data.png'
+    },
+    '门店数据收集情况': {
+      '2024-07-15': 'https://image-yirun.oss-cn-hangzhou.aliyuncs.com/images/yuwei/2/2024年7月15日.png',
+      '2024-07-16': 'images/yuwei/2023-07-16_store_data.png'
+    },
+    '每日加盟门店数量': {
+      '2024-07-15': 'https://image-yirun.oss-cn-hangzhou.aliyuncs.com/images/yuwei/3/2024年7月15日.png',
+      '2024-07-16': 'images/yuwei/2023-07-16_store_data.png'
+    },
+    '客户总数量': {
+      '2024-07-15': 'https://image-yirun.oss-cn-hangzhou.aliyuncs.com/images/yuwei/4/2024年7月15日.png',
+      '2024-07-16': 'images/yuwei/2023-07-16_store_data.png'
+    },
+    '业绩规划师门店数': {
+      '2024-07-15': 'https://image-yirun.oss-cn-hangzhou.aliyuncs.com/images/yuwei/5/2024年7月15日.png',
+      '2024-07-16': 'images/yuwei/2023-07-16_store_data.png'
+    },
+    '周报-预计完成条数与实际完成条数': {
+      '2024-07-15': 'images/yuwei/6/2024年7月15日.png',
+      '2024-07-16': 'images/yuwei/2023-07-16_store_data.png'
+    },
+    '客户满意度': {
+      '2024-07-15': 'images/yuwei/7/2024年7月15日.png',
+      '2024-07-16': 'images/yuwei/2023-07-16_store_data.png'
+    },
+    '品牌月店销数据': {
+      '2024-07-15': 'images/yuwei/8/2024年7月15日.png',
+      '2024-07-16': 'images/yuwei/2023-07-16_store_data.png'
+    }
+  },
+  '千好': {
+    '门店数据收集情况': {
+      '2024-07-15': 'images/yuwei/1/2024年7月15日.png',
+      '2024-07-16': 'images/yuwei/2023-07-16_store_data.png'
+    }
+  },
+  // 其他品牌和信息的图片数据类似配置...
+};
+
+    const brandButtonsContainer = document.getElementById('brand-buttons');
+    const infoButtonsContainer = document.getElementById('info-buttons-container');
+    const infoContentContainer = document.getElementById('info-content');
+    const selectedInfoElement = document.getElementById('selected-info');
+    const infoDetailsElement = document.getElementById('info-details');
+    const infoImageElement = document.getElementById('info-image');
+
+    let selectedBrand = null;
+    let selectedDate = '';
+
+    brands.forEach(brand => {
+        const button = document.createElement('button');
+        button.textContent = brand;
+        button.classList.add('brand-button');
+        button.setAttribute('data-brand', brand);
+
+        button.addEventListener('click', () => {
+            toggleBrand(brand);
+        });
+
+        brandButtonsContainer.appendChild(button);
+    });
+
+    infoButtons.forEach(info => {
+        const button = document.createElement('button');
+        button.textContent = info;
+        button.addEventListener('click', () => {
+            handleInfoClick(info);
+        });
+        infoButtonsContainer.appendChild(button);
+    });
+
+    function toggleBrand(brand) {
+        const previousButton = document.querySelector('.brand-button.active');
+        const currentButton = document.querySelector(`.brand-button[data-brand="${brand}"]`);
+
+        if (previousButton) {
+            previousButton.classList.remove('active');
+        }
+
+        if (selectedBrand === brand) {
+            selectedBrand = null;
+        } else {
+            selectedBrand = brand;
+            currentButton.classList.add('active');
+        }
+
+        updateUI();
+    }
+
+    function updateUI() {
+        console.log(`Updating UI with selected brand: ${selectedBrand} and selected date: ${selectedDate}`);
+        if (selectedBrand && selectedDate) {
+            document.getElementById('info-buttons').style.display = 'block';
+        } else {
+            document.getElementById('info-buttons').style.display = 'none';
+            infoContentContainer.style.display = 'none';
+        }
+    }
+
+    function handleInfoClick(info) {
+        selectedInfoElement.textContent = info;
+        infoDetailsElement.textContent = data[info];
+
+        console.log(`Selected Brand: ${selectedBrand}`);
+        console.log(`Selected Date: ${selectedDate}`);
+        console.log(`Images Object:`, images);
+        console.log(`Info: ${info}`);
+
+        if (selectedBrand && images[selectedBrand] && images[selectedBrand][info]) {
+            const imagePath = images[selectedBrand][info][selectedDate];
+            console.log(`Image Path: ${imagePath}`);
+            if (imagePath) {
+                infoImageElement.src = imagePath;
+                infoImageElement.style.display = 'block';
+            } else {
+                infoImageElement.style.display = 'none';
+                console.error('Image path not found or image does not exist.');
+            }
+        } else {
+            infoImageElement.style.display = 'none';
+            console.error('Selected brand or info not found in images object.');
+        }
+
+        infoContentContainer.style.display = 'block';
+    }
+
+    document.getElementById('date-picker').addEventListener('change', (event) => {
+        selectedDate = event.target.value;
+        updateUI();
+    });
+</script>
+
+</body>
+</html>
